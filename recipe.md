@@ -1,137 +1,189 @@
-# {{PROBLEM}} Multi-Class Planned Design Recipe
+# Car Class System Design Recipe
 
 ## 1. Describe the Problem
 
 As a car owner
 So that I can keep a record of details about my tyres
-I want to keep track of the tyres individually, by their position on my car
+I want to keep track of the tyres individually, by their position on my car. -------
 
 As a car owner
 So that I have the two important pieces of data for a tyre
-I want to be able to record both tyre pressure and tyre tread depth
+I want to be able to record both tyre pressure and tyre tread depth.      --------
 
 As a car owner
 So that I have a history of tyre readings
-I want to be able to keep a record of historical readings, when those were, as well as current readings
+I want to be able to keep a record of historical readings, when those were, as well as current readings.  ------- 
 
 As a car owner
 So that I can see the details of my car at a glance
-I want to list the tyres' positions, latest readings and when those were
+I want to list the tyres' positions, latest readings and when those were.  ---------
+
+
+car class:
+- list of tyres = []
+
++ add_tyre()
++ add_readings() ->
+            for tyre in car.list_of_tyres:
+                 tyre.addreading(30, 25, date)
+
++ list_tyre_pos_and_readings()
+
+
+tyre class:
+- pressure
+- tread depth
+- position = for example left_front, right_front, rear etc
+- history
+
++ current -> history[-1]
++ add_reading()
+
+tyre.history = [
+    {
+        pressure: string
+        tread: string
+        date: string
+
+    },
+    {
+        pressure: string
+        tread: string
+        date: string
+    },
+]
+
+
+for tyre in car.list_of_tyres:
+    tyre.addreading(30, 25, date)
+tyre.add_reading
+
+
 
 
 ## 2. Design the Class System
 
-_Consider diagramming out the classes and their relationships. Take care to
-focus on the details you see as important, not everything. The diagram below
-uses asciiflow.com but you could also use excalidraw.com, draw.io, or miro.com_
-
-```
-┌────────────────────────────┐
-│ MusicPlayer                │
-│                            │
-│ - tracks                   │
-│ - add(track)               │
-│ - search_by_title(keyword) │
-│   => [tracks...]           │
-└───────────┬────────────────┘
-            │
-            │ owns a list of
-            ▼
-┌─────────────────────────┐
-│ Track(title, artist)    │
-│                         │
-│ - title                 │
-│ - artist                │
-│ - format()              │
-│   => "TITLE by ARTIST"  │
-└─────────────────────────┘
-```
-
-_Also design the interface of each class in more detail._
-
 ```python
-class MusicLibrary:
+class Car:
     # User-facing properties:
-    #   tracks: list of instances of Track
+    #   list_of_tyres: list of instances of Tyres
 
     def __init__(self):
-        pass # No code here yet
+        list_of_tyres = []
 
-    def add(self, track):
+    def add_tyre(self, tyre):
         # Parameters:
-        #   track: an instance of Track
+        #   tyre: an instance of Tyre
         # Side-effects:
-        #   Adds the track to the tracks property of the self object
+        #   Adds the tyre to the list of tyres
         pass # No code here yet
 
-    def search_by_title(self, keyword):
+    def list_tyre_pos_and_readings(self):
         # Parameters:
-        #   keyword: string
+        #   None
         # Returns:
-        #   A list of the Track objects that have titles that include the keyword
+        #    A text with position of tyre and their info
         pass # No code here yet
 
 
-class Track:
+class Tyre:
     # User-facing properties:
-    #   title: string
-    #   artist: string
+    #   position: string
+    #   pressure: string
+    #   tread: string
+    #   date: string
+    #   history: []
 
-    def __init__(self, title, artist):
+    def __init__(self, position, pressure, tread, date):
         # Parameters:
-        #   title: string
-        #   artist: string
+        #   position: string
+        #   pressure: string
+        #   tread: string
+        #   date: string
+        #   history: []
         # Side-effects:
-        #   Sets the title and artist properties
+        #   Updates history list with its initialising reading
         pass # No code here yet
 
-    def format(self):
+    def add_reading(self, pressure, tread, date):
+        # Parameters:
+        #   pressure: string
+        #   tread: string
+        #   date: string
         # Returns:
-        #   A string of the form "TITLE by ARTIST"
+        #   Nothing
+        # Side-effects:
+        #   Updates history list with its new reading and its pressure, tread, and date attributes
         pass # No code here yet
 
 ```
 
 ## 3. Create Examples as Integration Tests
 
-_Create examples of the classes being used together in different situations and
-combinations that reflect the ways in which the system will be used._
-
 ```python
-# EXAMPLE
 
 """
-Given a library
-When we add two tracks
-We see those tracks reflected in the tracks list
+integration test to see if tyres can be add
+if tyres can hold history
 """
-library = MusicLibrary()
-track_1 = Track("Carte Blanche", "Veracocha")
-track_2 = Track("Synaesthesia", "The Thrillseekers")
-library.add(track_1)
-library.add(track_2)
-library.tracks # => [track_1, track_2]
+car = Car()
+left_front_tyre = Tyre('left front', '30', '25', '01/01/26')
+right_front_tyre = Tyre('right front', '33', '27', '01/01/26')
+car.add_tyre(left_front_tyre)
+car.add_tyre(right_front_tyre)
+car.list_of_tyres => [left_front_tyre, right_front_tyre]
+
+
+"""
+given car has tyres with history
+can it be viewed
+"""
+car = Car()
+left_front_tyre = Tyre('left front', '30', '25', '01/01/26')
+right_front_tyre = Tyre('right front', '33', '27', '01/01/26')
+car.add_tyre(left_front_tyre)
+car.add_tyre(right_front_tyre)
+
+left_front_tyre.add_reading('25', '20', '03/03/26')
+car.list_tyre_pos_and_readings() => 
+f'{position} = {recent_results}'
+
 ```
 
 ## 4. Create Examples as Unit Tests
 
-_Create examples, where appropriate, of the behaviour of each relevant class at
-a more granular level of detail._
-
 ```python
-# EXAMPLE
 
 """
-Given a track with a title and an artist
-We see the title reflected in the title property
+Given a pressure and tread and date
+add_reading adds those new readings to the relevant tyre
 """
-track = Track("Carte Blanche", "Veracocha")
-track.title # => "Carte Blanche"
+tyre = Tyre('left front', '30', '25', '01/01/26')
+tyre.history => [
+    {
+        pressure: '25'
+        tread: '20'
+        date: '03/03/26'
+    },
+]
+
+"""
+Given a history of readings is recorded on a Tyre
+I want to see the history
+"""
+tyre = Tyre('left front', '30', '25', '01/01/26')
+tyre.add_reading('25', '20', '03/03/26')
+tyre.history => [
+    {
+        pressure: '30'
+        tread: '25'
+        date: '01/01/26'
+
+    },
+    {
+        pressure: '25'
+        tread: '20'
+        date: '03/03/26'
+    },
+]
 ```
-
-_Encode each example as a test. You can add to the above list as you go._
-
-## 5. Implement the Behaviour
-
-_After each test you write, follow the test-driving process of red, green,
-refactor to implement the behaviour._
